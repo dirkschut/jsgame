@@ -1,1 +1,1 @@
-
+console.log("JS Game");
