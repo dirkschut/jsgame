@@ -49,6 +49,21 @@ let WorldMap = function(width, height){
     }
   }
   
+  this.GenerateFromArray(mapArray){
+    for(y = 0; y < mapArray.length; y++){
+      for(x = 0; x < mapArray[y].length; x++){
+        switch(mapArray[y][x]){
+          case 'g':
+            tiles[y][x] = new WorldTile(gameData.tileTypes["Grass"]);
+            break;
+          default:
+            tiles[y][x] = new WorldTile(gameData.tileTypes["Dirt"]);
+            break;
+        }
+      }
+    }
+  }
+  
   this.Draw = function(){
     let map = "<table id='map'>";
     for(y = 0; y < this.width; y++){
