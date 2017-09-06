@@ -30,11 +30,6 @@ let World = function(){
 }
 
 let WorldMap = function(width, height){
-  this.tiles = new Array();
-  this.width = width;
-  this.height = height;
-  this.Generate();
-  
   this.Generate = function(){
     for(y = 0; y < height; y++){
       let col = new Array();
@@ -49,7 +44,7 @@ let WorldMap = function(width, height){
     }
   }
   
-  this.GenerateFromArray(mapArray){
+  this.GenerateFromArray = function(mapArray){
     for(y = 0; y < mapArray.length; y++){
       for(x = 0; x < mapArray[y].length; x++){
         switch(mapArray[y][x]){
@@ -76,6 +71,11 @@ let WorldMap = function(width, height){
     map += "</table>";
     document.getElementById("appendable").innerHTML = map;
   }
+
+  this.tiles = new Array();
+  this.width = width;
+  this.height = height;
+  this.Generate();
 }
 
 let WorldTile = function(type, x, y){
