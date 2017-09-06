@@ -60,15 +60,23 @@ let WorldMap = function(width, height){
   }
   
   this.Draw = function(){
-    let map = "<table id='map'>";
+    let map = "<div class='row'><div class='col-md-4'><table id='map'>";
     for(y = 0; y < this.width; y++){
       map += "<tr>";
       for(x = 0; x < this.height; x++){
-        map += "<td style='background-color:" + this.tiles[y][x].type.color + "'>" + x + "," + y + "</td>";
+        map += "<td class='MapTile MapTile_" + this.tiles[y][x].type.name + "' style='background-color:" + this.tiles[y][x].type.color + "'>" + x + "," + y + "</td>";
       }
       map += "</tr>";
     }
-    map += "</table>";
+    map += "</table></div>";
+
+    map += "<div class='col-md-4'><table class='DirButtons'>";
+    map += "<tr><td>NW</td><td>N</td><td>NE</td></tr>"
+    map += "<tr><td>W</td><td>...</td><td>E</td></tr>"
+    map += "<tr><td>SW</td><td>S</td><td>SE</td></tr>";
+    map += "</table></div>";
+
+    map += "</div>";
     document.getElementById("appendable").innerHTML = map;
   }
 
