@@ -9,12 +9,14 @@ body {
 
 .MapTile {
     width: 32px;
+    min-width: 32px;
     height: 32px;
     border: 1px solid black;
 }
 
 .col-md-4 {
     border: solid black 1px;
+    padding: 0px;
 }
 
 .col-md-2 {
