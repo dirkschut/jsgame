@@ -42,8 +42,11 @@ let Game = function(){
 let GameData = function(){
   this.tileTypes = new Array();
   this.tileTypes["Grass"] = new TileType("Grass", "#008000");
+  this.tileTypes["Grass"].image = "grass.png";
   this.tileTypes["Dirt"] = new TileType("Dirt", "#8b4513");
+  this.tileTypes["Dirt"].image = "dirt.png";
   this.tileTypes["Wall"] = new TileType("Wall", "#808080");
+  this.tileTypes["Wall"].image = "wall.png";
   this.tileTypes["Wall"].enterable = false;
   console.log("Finished init gameData");
 }
@@ -96,7 +99,7 @@ let WorldMap = function(width, height){
           extra += "C";
         }
 
-        map += "<td class='MapTile MapTile_" + this.tiles[y][x].type.name + "' style='background-color:" + this.tiles[y][x].type.color + "'>" + extra + "</td>";
+        map += "<td class='MapTile MapTile_" + this.tiles[y][x].type.name + "' style='background-color:" + this.tiles[y][x].type.color + "; background-image: url(\"" + this.tiles[y][x].type.image + "\")'>" + extra + "</td>";
       }
       map += "</tr>";
     }
@@ -136,6 +139,7 @@ let WorldTile = function(type, x, y){
 let TileType = function(name, color){
   this.name = name;
   this.color = color;
+  this.image = "";
   this.enterable = true;
 }
 
