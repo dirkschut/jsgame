@@ -4,13 +4,14 @@ let game;
 let gameDate;
 
 $( document ).ready(function() {
-  LoadGame();
+  InitGame();
   game.world.worldMap.Draw();
 });
 
-let LoadGame = function(){
+let InitGame = function(){
   gameData = new GameData();
   game = new Game();
+  game.Load();
   console.log("ready");
 }
 
@@ -21,7 +22,20 @@ let Game = function(){
 
   this.DoTurn = function(){
     this.turnCounter++;
+    this.Save();
     this.world.worldMap.Draw();
+  }
+
+  this.Save = function(){
+    localStorage.setItem("turnCounter", this.turnCounter);
+    localStorage.setItem("character_x", this.character.x);
+    localStorage.setItem("character_y", this.character.y);
+  }
+
+  this.Load = function(){
+    if(localStorage.getItem("turnCounter") != null)this.turnCounter = Number(localStorage.getItem("turnCounter"));
+    if(localStorage.getItem("character_x") != null)this.character.x = Number(localStorage.getItem("character_x"));
+    if(localStorage.getItem("character_y") != null)this.character.y = Number(localStorage.getItem("character_y"));
   }
 }
 
