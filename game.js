@@ -5,6 +5,7 @@ let gameDate;
 
 $( document ).ready(function() {
   LoadGame();
+  game.world.worldMap.Draw();
 });
 
 let LoadGame = function(){
@@ -15,6 +16,7 @@ let LoadGame = function(){
 
 let Game = function(){
   this.world = new World();
+  this.character = new Character(4, 4);
 }
 
 let GameData = function(){
@@ -26,7 +28,6 @@ let GameData = function(){
 
 let World = function(){
   this.worldMap = new WorldMap(10, 10);
-  this.worldMap.Draw();
 }
 
 let WorldMap = function(width, height){
@@ -64,16 +65,22 @@ let WorldMap = function(width, height){
     for(y = 0; y < this.width; y++){
       map += "<tr>";
       for(x = 0; x < this.height; x++){
-        map += "<td class='MapTile MapTile_" + this.tiles[y][x].type.name + "' style='background-color:" + this.tiles[y][x].type.color + "'>" + x + "," + y + "</td>";
+        let extra = "";
+
+        if(x == game.character.x && y == game.character.y){
+          extra += "C";
+        }
+
+        map += "<td class='MapTile MapTile_" + this.tiles[y][x].type.name + "' style='background-color:" + this.tiles[y][x].type.color + "'>" + extra + "</td>";
       }
       map += "</tr>";
     }
     map += "</table></div>";
 
     map += "<div class='col-md-4'><table class='DirButtons'>";
-    map += "<tr><td>NW</td><td>N</td><td>NE</td></tr>"
-    map += "<tr><td>W</td><td>...</td><td>E</td></tr>"
-    map += "<tr><td>SW</td><td>S</td><td>SE</td></tr>";
+    map += "<tr><td onclick='game.character.Move(\"NW\")'>NW</td><td onclick='game.character.Move(\"N\")'>N</td><td onclick='game.character.Move(\"NE\")'>NE</td></tr>";
+    map += "<tr><td onclick='game.character.Move(\"W\")'>W</td><td>...</td><td onclick='game.character.Move(\"E\")'>E</td></tr>";
+    map += "<tr><td onclick='game.character.Move(\"SW\")'>SW</td><td onclick='game.character.Move(\"S\")'>S</td><td onclick='game.character.Move(\"SE\")'>SE</td></tr>";
     map += "</table></div>";
 
     map += "</div>";
@@ -95,4 +102,51 @@ let WorldTile = function(type, x, y){
 let TileType = function(name, color){
   this.name = name;
   this.color = color;
+}
+
+let Character = function(x, y){
+  this.x = x;
+  this.y = y;
+
+  this.Move = function(dir){
+    let xd = 0;
+    let dy = 0;
+    switch(dir){
+      case "NW":
+        dy = -1;
+        dx = -1;
+        break;
+      case "N":
+        dy = -1;
+        dx = 0;
+        break;
+      case "NE":
+        dy = -1;
+        dx = 1;
+        break;
+      case "W":
+        dy = 0;
+        dx = -1;
+        break;
+      case "E":
+        dy = 0;
+        dx = 1;
+        break;
+      case "SW":
+        dy = 1;
+        dx = -1;
+        break;
+      case "S":
+        dy = 1;
+        dx = 0;
+        break;
+      case "SE":
+        dy = 1;
+        dx = 1;
+        break;
+    }
+    this.x += dx;
+    this.y += dy;
+    game.world.worldMap.Draw();
+  }
 }
