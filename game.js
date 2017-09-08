@@ -17,6 +17,12 @@ let LoadGame = function(){
 let Game = function(){
   this.world = new World();
   this.character = new Character(4, 4);
+  this.turnCounter = 0;
+
+  this.DoTurn = function(){
+    this.turnCounter++;
+    this.world.worldMap.Draw();
+  }
 }
 
 let GameData = function(){
@@ -82,7 +88,9 @@ let WorldMap = function(width, height){
     }
     map += "</table></div>";
 
-    map += "<div class='col-md-4'><table class='DirButtons'>";
+    map += "<div class='col-md-2'>";
+    map += "<p>Turn #" + game.turnCounter + "</p>";
+    map += "<table class='DirButtons'>";
     map += "<tr><td onclick='game.character.Move(\"NW\")'>NW</td><td onclick='game.character.Move(\"N\")'>N</td><td onclick='game.character.Move(\"NE\")'>NE</td></tr>";
     map += "<tr><td onclick='game.character.Move(\"W\")'>W</td><td>...</td><td onclick='game.character.Move(\"E\")'>E</td></tr>";
     map += "<tr><td onclick='game.character.Move(\"SW\")'>SW</td><td onclick='game.character.Move(\"S\")'>S</td><td onclick='game.character.Move(\"SE\")'>SE</td></tr>";
@@ -162,6 +170,6 @@ let Character = function(x, y){
       this.x += dx;
       this.y += dy;
     }
-    game.world.worldMap.Draw();
+    game.DoTurn();
   }
 }

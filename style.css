@@ -17,6 +17,10 @@ body {
     border: solid black 1px;
 }
 
+.col-md-2 {
+    border: 1px solid black;
+}
+
 .DirButtons td {
     width: 32px;
     height: 32px;
