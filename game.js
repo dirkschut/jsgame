@@ -23,6 +23,8 @@ let GameData = function(){
   this.tileTypes = new Array();
   this.tileTypes["Grass"] = new TileType("Grass", "#008000");
   this.tileTypes["Dirt"] = new TileType("Dirt", "#8b4513");
+  this.tileTypes["Wall"] = new TileType("Wall", "#808080");
+  this.tileTypes["Wall"].enterable = false;
   console.log("Finished init gameData");
 }
 
@@ -38,6 +40,9 @@ let WorldMap = function(width, height){
         let type = gameData.tileTypes["Grass"];
         if((x + y) % 2 == 1){
           type = gameData.tileTypes["Dirt"];
+        }
+        if(x == 0 || y == 0 || x == width - 1 || y == height -1){
+          type = gameData.tileTypes["Wall"];
         }
         col.push(new WorldTile(type, x, y));
       }
@@ -87,6 +92,13 @@ let WorldMap = function(width, height){
     document.getElementById("appendable").innerHTML = map;
   }
 
+  this.TileIsEnterable = function(x, y){
+    if(x < 0 || y < 0 || x >= this.width || y >= this.height){
+      return false;
+    }
+    return this.tiles[y][x].type.enterable;
+  }
+
   this.tiles = new Array();
   this.width = width;
   this.height = height;
@@ -102,6 +114,7 @@ let WorldTile = function(type, x, y){
 let TileType = function(name, color){
   this.name = name;
   this.color = color;
+  this.enterable = true;
 }
 
 let Character = function(x, y){
@@ -145,8 +158,10 @@ let Character = function(x, y){
         dx = 1;
         break;
     }
-    this.x += dx;
-    this.y += dy;
+    if(game.world.worldMap.TileIsEnterable(this.x + dx, this.y + dy)){
+      this.x += dx;
+      this.y += dy;
+    }
     game.world.worldMap.Draw();
   }
 }
