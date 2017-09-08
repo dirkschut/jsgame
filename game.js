@@ -30,12 +30,14 @@ let Game = function(){
     localStorage.setItem("turnCounter", this.turnCounter);
     localStorage.setItem("character_x", this.character.x);
     localStorage.setItem("character_y", this.character.y);
+    localStorage.setItem("character_gold", this.character.gold);
   }
 
   this.Load = function(){
     if(localStorage.getItem("turnCounter") != null)this.turnCounter = Number(localStorage.getItem("turnCounter"));
     if(localStorage.getItem("character_x") != null)this.character.x = Number(localStorage.getItem("character_x"));
     if(localStorage.getItem("character_y") != null)this.character.y = Number(localStorage.getItem("character_y"));
+    if(localStorage.getItem("character_gold") != null)this.character.gold = Number(localStorage.getItem("character_gold"));
   }
 }
 
@@ -48,6 +50,15 @@ let GameData = function(){
   this.tileTypes["Wall"] = new TileType("Wall", "#808080");
   this.tileTypes["Wall"].image = "wall.png";
   this.tileTypes["Wall"].enterable = false;
+
+  this.entities = new Array();
+  this.entities["Gold"] = new Entity("Gold");
+  this.entities["Gold"].interaction = function(entity){
+    game.character.gold++;
+    entity.Destroy();
+  }
+  this.entities["Gold"].image = "goldcoin.png";
+  
   console.log("Finished init gameData");
 }
 
@@ -67,7 +78,9 @@ let WorldMap = function(width, height){
         if(x == 0 || y == 0 || x == width - 1 || y == height -1){
           type = gameData.tileTypes["Wall"];
         }
-        col.push(new WorldTile(type, x, y));
+        let tile = new WorldTile(type, x, y);
+        tile.entity = new Entity(gameData.entities["Gold"], tile);
+        col.push(tile);
       }
       this.tiles.push(col);
     }
@@ -99,6 +112,10 @@ let WorldMap = function(width, height){
           extra += "C";
         }
 
+        if(this.tiles[y][x].entity != null){
+          extra += "<img src='" + this.tiles[y][x].entity.type.image + "' />";
+        }
+
         map += "<td class='MapTile MapTile_" + this.tiles[y][x].type.name + "' style='background-color:" + this.tiles[y][x].type.color + "; background-image: url(\"" + this.tiles[y][x].type.image + "\")'>" + extra + "</td>";
       }
       map += "</tr>";
@@ -107,6 +124,7 @@ let WorldMap = function(width, height){
 
     map += "<div class='col-md-2'>";
     map += "<p>Turn #" + game.turnCounter + "</p>";
+    map += "<p>Gold amount: " + game.character.gold + "</p>";
     map += "<table class='DirButtons'>";
     map += "<tr><td onclick='game.character.Move(\"NW\")'>NW</td><td onclick='game.character.Move(\"N\")'>N</td><td onclick='game.character.Move(\"NE\")'>NE</td></tr>";
     map += "<tr><td onclick='game.character.Move(\"W\")'>W</td><td>...</td><td onclick='game.character.Move(\"E\")'>E</td></tr>";
@@ -121,6 +139,9 @@ let WorldMap = function(width, height){
     if(x < 0 || y < 0 || x >= this.width || y >= this.height){
       return false;
     }
+    if(this.tiles[y][x].entity != null){
+      this.tiles[y][x].entity.type.interaction(this.tiles[y][x].entity);
+    }
     return this.tiles[y][x].type.enterable;
   }
 
@@ -134,6 +155,7 @@ let WorldTile = function(type, x, y){
   this.type = type;
   this.x = x;
   this.y = y;
+  this.entity = null;
 }
 
 let TileType = function(name, color){
@@ -143,9 +165,28 @@ let TileType = function(name, color){
   this.enterable = true;
 }
 
+let EntityType = function(name){
+  this.name = "";
+  this.interaction = null;
+  this.image = "";
+}
+
+let Entity = function(type, tile){
+  this.type = type;
+  this.tile = tile;
+
+  console.log(this.tile);
+
+  this.Destroy = function(){
+    console.log(this.tile);
+    this.tile.entity = null;
+  }
+}
+
 let Character = function(x, y){
   this.x = x;
   this.y = y;
+  this.gold = 0;
 
   this.Move = function(dir){
     let xd = 0;
