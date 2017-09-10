@@ -5,7 +5,7 @@ let gameDate;
 
 $( document ).ready(function() {
   InitGame();
-  game.world.worldMap.Draw();
+  game.world.worldMaps[game.world.currentMap].Draw();
 });
 
 let InitGame = function(){
@@ -23,7 +23,7 @@ let Game = function(){
   this.DoTurn = function(){
     this.turnCounter++;
     this.Save();
-    this.world.worldMap.Draw();
+    this.world.worldMaps[game.world.currentMap].Draw();
   }
 
   this.Save = function(){
@@ -63,11 +63,39 @@ let GameData = function(){
 }
 
 let World = function(){
-  this.worldMap = new WorldMap(10, 10);
+  this.worldMaps = Array();
+  this.worldMaps["enter"] = new WorldMap(10, 10);
+  this.worldMaps["enter"].GenerateFromArray([
+    ['w', 'w', 'd', 'w', 'w', 'w', 'w', 'w', 'w', 'w'],
+    ['w', 'g', 'd', 'd', 'd', 'g', 'g', 'g', 'g', 'w'],
+    ['w', 'g', 'g', 'g', 'd', 'g', 'g', 'g', 'g', 'w'],
+    ['w', 'g', 'g', 'g', 'd', 'd', 'g', 'g', 'g', 'w'],
+    ['w', 'g', 'g', 'g', 'g', 'd', 'g', 'g', 'g', 'w'],
+    ['w', 'g', 'g', 'g', 'g', 'd', 'g', 'g', 'g', 'w'],
+    ['w', 'g', 'g', 'g', 'g', 'd', 'd', 'g', 'g', 'w'],
+    ['w', 'g', 'g', 'g', 'g', 'g', 'd', 'g', 'g', 'w'],
+    ['w', 'g', 'g', 'g', 'g', 'g', 'd', 'd', 'g', 'w'],
+    ['w', 'w', 'w', 'w', 'w', 'w', 'w', 'd', 'w', 'w']
+  ],[
+    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', 'g', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', 'g', ' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ']
+  ]);
+  this.currentMap = "enter";
 }
 
-let WorldMap = function(width, height){
-  this.Generate = function(){
+let WorldMap = function(){
+  this.Generate = function(width, height){
+    this.width = width;
+    this.height = height;
+    this.tiles = new Array();
     for(y = 0; y < height; y++){
       let col = new Array();
       for(x = 0; x < width; x++){
@@ -89,6 +117,7 @@ let WorldMap = function(width, height){
   this.GenerateFromArray = function(tileArray, entityArray){
     this.width = tileArray.length;
     this.height = tileArray[0].length;
+    this.tiles = new Array();
     for(y = 0; y < tileArray.length; y++){
       let col = new Array();
       for(x = 0; x < tileArray[y].length; x++){
@@ -161,33 +190,6 @@ let WorldMap = function(width, height){
     }
     return this.tiles[y][x].type.enterable;
   }
-
-  this.tiles = new Array();
-  this.width = width;
-  this.height = height;
-  this.GenerateFromArray([
-    ['w', 'w', 'd', 'w', 'w', 'w', 'w', 'w', 'w', 'w'],
-    ['w', 'g', 'd', 'd', 'd', 'g', 'g', 'g', 'g', 'w'],
-    ['w', 'g', 'g', 'g', 'd', 'g', 'g', 'g', 'g', 'w'],
-    ['w', 'g', 'g', 'g', 'd', 'd', 'g', 'g', 'g', 'w'],
-    ['w', 'g', 'g', 'g', 'g', 'd', 'g', 'g', 'g', 'w'],
-    ['w', 'g', 'g', 'g', 'g', 'd', 'g', 'g', 'g', 'w'],
-    ['w', 'g', 'g', 'g', 'g', 'd', 'd', 'g', 'g', 'w'],
-    ['w', 'g', 'g', 'g', 'g', 'g', 'd', 'g', 'g', 'w'],
-    ['w', 'g', 'g', 'g', 'g', 'g', 'd', 'd', 'g', 'w'],
-    ['w', 'w', 'w', 'w', 'w', 'w', 'w', 'd', 'w', 'w']
-  ],[
-    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
-    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
-    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
-    [' ', ' ', 'g', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
-    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
-    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
-    [' ', ' ', ' ', 'g', ' ', ' ', ' ', ' ', ' ', ' '],
-    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
-    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
-    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ']
-  ]);
 }
 
 let WorldTile = function(type, x, y){
@@ -261,7 +263,7 @@ let Character = function(x, y){
         dx = 1;
         break;
     }
-    if(game.world.worldMap.TileIsEnterable(this.x + dx, this.y + dy)){
+    if(game.world.worldMaps[game.world.currentMap].TileIsEnterable(this.x + dx, this.y + dy)){
       this.x += dx;
       this.y += dy;
     }
