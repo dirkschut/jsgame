@@ -92,16 +92,27 @@ let WorldMap = function(width, height){
     for(y = 0; y < tileArray.length; y++){
       let col = new Array();
       for(x = 0; x < tileArray[y].length; x++){
+        let type;
         switch(tileArray[y][x]){
           case 'g':
-            col.push(new WorldTile(gameData.tileTypes["Grass"], x, y));
+            type = gameData.tileTypes["Grass"];
             break;
           case 'd':
-            col.push(new WorldTile(gameData.tileTypes["Dirt"], x, y));
+            type = gameData.tileTypes["Dirt"];
             break;
           case 'w':
-            col.push(new WorldTile(gameData.tileTypes["Wall"], x, y));
+            type = gameData.tileTypes["Wall"];
+            break;
         }
+        let tile = new WorldTile(type, x, y);
+        
+        switch(entityArray[y][x]){
+          case 'g':
+            tile.entity = new Entity(gameData.entities["Gold"], tile);
+            break;
+        }
+
+        col.push(tile);
       }
       this.tiles.push(col);
     }
@@ -165,6 +176,17 @@ let WorldMap = function(width, height){
     ['w', 'g', 'g', 'g', 'g', 'g', 'd', 'g', 'g', 'w'],
     ['w', 'g', 'g', 'g', 'g', 'g', 'd', 'd', 'g', 'w'],
     ['w', 'w', 'w', 'w', 'w', 'w', 'w', 'd', 'w', 'w']
+  ],[
+    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', 'g', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', 'g', ' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ']
   ]);
 }
 
@@ -192,10 +214,7 @@ let Entity = function(type, tile){
   this.type = type;
   this.tile = tile;
 
-  console.log(this.tile);
-
   this.Destroy = function(){
-    console.log(this.tile);
     this.tile.entity = null;
   }
 }
