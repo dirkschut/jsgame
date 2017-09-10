@@ -219,13 +219,13 @@ let WorldMap = function(){
       map += "<tr>";
       for(x = 0; x < this.height; x++){
         let extra = "";
-
-        if(x == game.character.x && y == game.character.y){
-          extra += "C";
+        
+        if(this.tiles[y][x].entity != null){
+          extra += "<img class='entity' src='" + this.tiles[y][x].entity.type.image + "' />";
         }
 
-        if(this.tiles[y][x].entity != null){
-          extra += "<img src='" + this.tiles[y][x].entity.type.image + "' />";
+        if(x == game.character.x && y == game.character.y){
+          extra += "<div class='character'>C</div>";
         }
 
         map += "<td class='MapTile MapTile_" + this.tiles[y][x].type.name + "' style='background-color:" + this.tiles[y][x].type.color + "; background-image: url(\"" + this.tiles[y][x].type.image + "\")'>" + extra + "</td>";
