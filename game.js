@@ -27,11 +27,17 @@ let Game = function(){
   }
 
   this.Save = function(){
+    localStorage.clear();
     localStorage.setItem("turnCounter", this.turnCounter);
     localStorage.setItem("character_x", this.character.x);
     localStorage.setItem("character_y", this.character.y);
     localStorage.setItem("character_gold", this.character.gold);
     localStorage.setItem("currentMap", this.world.currentMap);
+
+    for(i = 0; i < this.character.inventory.items.length; i++){
+      localStorage.setItem("character_inv_" + i + "_name", this.character.inventory.items[i].itemType.name);
+      localStorage.setItem("character_inv_" + i + "_amount", this.character.inventory.items[i].amount);
+    }
   }
 
   this.Load = function(){
@@ -40,6 +46,16 @@ let Game = function(){
     if(localStorage.getItem("character_y") != null)this.character.y = Number(localStorage.getItem("character_y"));
     if(localStorage.getItem("character_gold") != null)this.character.gold = Number(localStorage.getItem("character_gold"));
     if(localStorage.getItem("currentMap") != null)this.world.currentMap = localStorage.getItem("currentMap");
+
+    for(i = 0; i < this.character.inventory.numCells; i++){
+      if(localStorage.getItem("character_inv_" + i + "_name") != null){
+        let itemName = localStorage.getItem("character_inv_" + i + "_name");
+        let amount = Number(localStorage.getItem("character_inv_" + i + "_amount"));
+        if(gameData.items[itemName] != null){
+          this.character.inventory.AddItem(new Item(gameData.items[itemName], amount));
+        }
+      }
+    }
   }
 }
 
