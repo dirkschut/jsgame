@@ -31,7 +31,6 @@ let Game = function(){
     localStorage.setItem("turnCounter", this.turnCounter);
     localStorage.setItem("character_x", this.character.x);
     localStorage.setItem("character_y", this.character.y);
-    localStorage.setItem("character_gold", this.character.gold);
     localStorage.setItem("currentMap", this.world.currentMap);
 
     for(i = 0; i < this.character.inventory.items.length; i++){
@@ -44,7 +43,6 @@ let Game = function(){
     if(localStorage.getItem("turnCounter") != null)this.turnCounter = Number(localStorage.getItem("turnCounter"));
     if(localStorage.getItem("character_x") != null)this.character.x = Number(localStorage.getItem("character_x"));
     if(localStorage.getItem("character_y") != null)this.character.y = Number(localStorage.getItem("character_y"));
-    if(localStorage.getItem("character_gold") != null)this.character.gold = Number(localStorage.getItem("character_gold"));
     if(localStorage.getItem("currentMap") != null)this.world.currentMap = localStorage.getItem("currentMap");
 
     for(i = 0; i < this.character.inventory.numCells; i++){
@@ -72,7 +70,6 @@ let GameData = function(){
   this.entities = new Array();
   this.entities["Gold"] = new EntityType("Gold");
   this.entities["Gold"].interaction = function(entity){
-    game.character.gold++;
     game.character.inventory.AddItem(new Item(gameData.items["Gold Coin"], 1));
     entity.Destroy();
   }
@@ -244,7 +241,6 @@ let WorldMap = function(){
     map += "<tr><td onclick='game.character.Move(\"SW\")'>SW</td><td onclick='game.character.Move(\"S\")'>S</td><td onclick='game.character.Move(\"SE\")'>SE</td></tr>";
     map += "</table><ul>";
     map += "<li>Turn #" + game.turnCounter + "</li>";
-    map += "<li>Gold amount: " + game.character.gold + "</li>";
     map += "<li>Map: " + game.world.currentMap + "</li>";
     map += "<li>Position: " + game.character.x + ", " + game.character.y + "</li>";
     map += "</ul></div>";
@@ -318,7 +314,6 @@ let Entity = function(type, tile){
 let Character = function(x, y){
   this.x = x;
   this.y = y;
-  this.gold = 0;
   this.inventory = new Inventory(10);
 
   this.Move = function(dir){
