@@ -86,18 +86,24 @@ let WorldMap = function(width, height){
     }
   }
   
-  this.GenerateFromArray = function(mapArray){
-    for(y = 0; y < mapArray.length; y++){
-      for(x = 0; x < mapArray[y].length; x++){
-        switch(mapArray[y][x]){
+  this.GenerateFromArray = function(tileArray, entityArray){
+    this.width = tileArray.length;
+    this.height = tileArray[0].length;
+    for(y = 0; y < tileArray.length; y++){
+      let col = new Array();
+      for(x = 0; x < tileArray[y].length; x++){
+        switch(tileArray[y][x]){
           case 'g':
-            tiles[y][x] = new WorldTile(gameData.tileTypes["Grass"]);
+            col.push(new WorldTile(gameData.tileTypes["Grass"], x, y));
             break;
-          default:
-            tiles[y][x] = new WorldTile(gameData.tileTypes["Dirt"]);
+          case 'd':
+            col.push(new WorldTile(gameData.tileTypes["Dirt"], x, y));
             break;
+          case 'w':
+            col.push(new WorldTile(gameData.tileTypes["Wall"], x, y));
         }
       }
+      this.tiles.push(col);
     }
   }
   
@@ -148,7 +154,18 @@ let WorldMap = function(width, height){
   this.tiles = new Array();
   this.width = width;
   this.height = height;
-  this.Generate();
+  this.GenerateFromArray([
+    ['w', 'w', 'd', 'w', 'w', 'w', 'w', 'w', 'w', 'w'],
+    ['w', 'g', 'd', 'd', 'd', 'g', 'g', 'g', 'g', 'w'],
+    ['w', 'g', 'g', 'g', 'd', 'g', 'g', 'g', 'g', 'w'],
+    ['w', 'g', 'g', 'g', 'd', 'd', 'g', 'g', 'g', 'w'],
+    ['w', 'g', 'g', 'g', 'g', 'd', 'g', 'g', 'g', 'w'],
+    ['w', 'g', 'g', 'g', 'g', 'd', 'g', 'g', 'g', 'w'],
+    ['w', 'g', 'g', 'g', 'g', 'd', 'd', 'g', 'g', 'w'],
+    ['w', 'g', 'g', 'g', 'g', 'g', 'd', 'g', 'g', 'w'],
+    ['w', 'g', 'g', 'g', 'g', 'g', 'd', 'd', 'g', 'w'],
+    ['w', 'w', 'w', 'w', 'w', 'w', 'w', 'd', 'w', 'w']
+  ]);
 }
 
 let WorldTile = function(type, x, y){
