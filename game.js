@@ -126,6 +126,7 @@ let World = function(){
     [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
     [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ']
   ]);
+  this.worldMaps["north"].AddPortal(2, 9, "enter", 2, 0);
 
   this.currentMap = "enter";
 }
