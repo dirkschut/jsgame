@@ -44,11 +44,11 @@ let Game = function(){
 let GameData = function(){
   this.tileTypes = new Array();
   this.tileTypes["Grass"] = new TileType("Grass", "#008000");
-  this.tileTypes["Grass"].image = "grass.png";
+  this.tileTypes["Grass"].image = "img/tiles/grass.png";
   this.tileTypes["Dirt"] = new TileType("Dirt", "#8b4513");
-  this.tileTypes["Dirt"].image = "dirt.png";
+  this.tileTypes["Dirt"].image = "img/tiles/dirt.png";
   this.tileTypes["Wall"] = new TileType("Wall", "#808080");
-  this.tileTypes["Wall"].image = "wall.png";
+  this.tileTypes["Wall"].image = "img/tiles/wall.png";
   this.tileTypes["Wall"].enterable = false;
 
   this.entities = new Array();
@@ -57,7 +57,7 @@ let GameData = function(){
     game.character.gold++;
     entity.Destroy();
   }
-  this.entities["Gold"].image = "goldcoin.png";
+  this.entities["Gold"].image = "img/goldcoin.png";
   
   console.log("Finished init gameData");
 }
