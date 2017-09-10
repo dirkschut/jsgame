@@ -76,7 +76,7 @@ let GameData = function(){
     game.character.inventory.AddItem(new Item(gameData.items["Gold Coin"], 1));
     entity.Destroy();
   }
-  this.entities["Gold"].image = "img/goldcoin.png";
+  this.entities["Gold"].image = "img/items/goldcoin.png";
 
   this.entities["Portal"] = new EntityType("Portal");
   this.entities["Portal"].interaction = function(entity){
@@ -90,6 +90,7 @@ let GameData = function(){
   this.items = new Array();
   this.items["Gold Coin"] = new ItemType("Gold Coin");
   this.items["Gold Coin"].stackSize = 5;
+  this.items["Gold Coin"].image = "img/items/goldcoin.png";
   
   console.log("Finished init gameData");
 }
@@ -253,6 +254,7 @@ let WorldMap = function(){
     map += "<ul>";
     for(i = 0; i < game.character.inventory.items.length; i++){
       map += "<li>";
+      map += "<img src='" + game.character.inventory.items[i].itemType.image + "' />";
       map += game.character.inventory.items[i].amount;
       map += " ";
       map += game.character.inventory.items[i].itemType.name;
