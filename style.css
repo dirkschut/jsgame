@@ -28,3 +28,9 @@ body {
     height: 32px;
     border: 1px solid black;
 }
+
+ul {
+    list-style: none;
+    padding: 0;
+    text-align: left;
+}

@@ -216,15 +216,17 @@ let WorldMap = function(){
     map += "</table></div>";
 
     map += "<div class='col-md-2'>";
-    map += "<p>Turn #" + game.turnCounter + "</p>";
-    map += "<p>Gold amount: " + game.character.gold + "</p>";
     map += "<table class='DirButtons'>";
     map += "<tr><td onclick='game.character.Move(\"NW\")'>NW</td><td onclick='game.character.Move(\"N\")'>N</td><td onclick='game.character.Move(\"NE\")'>NE</td></tr>";
     map += "<tr><td onclick='game.character.Move(\"W\")'>W</td><td>...</td><td onclick='game.character.Move(\"E\")'>E</td></tr>";
     map += "<tr><td onclick='game.character.Move(\"SW\")'>SW</td><td onclick='game.character.Move(\"S\")'>S</td><td onclick='game.character.Move(\"SE\")'>SE</td></tr>";
-    map += "</table></div>";
+    map += "</table><ul>";
+    map += "<li>Turn #" + game.turnCounter + "</li>";
+    map += "<li>Gold amount: " + game.character.gold + "</li>";
+    map += "<li>Map: " + game.world.currentMap + "</li>";
+    map += "<li>Position: " + game.character.x + ", " + game.character.y + "</li>";
 
-    map += "</div>";
+    map += "</ul></div></div>";
     document.getElementById("appendable").innerHTML = map;
   }
 
