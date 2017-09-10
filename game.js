@@ -31,6 +31,7 @@ let Game = function(){
     localStorage.setItem("character_x", this.character.x);
     localStorage.setItem("character_y", this.character.y);
     localStorage.setItem("character_gold", this.character.gold);
+    localStorage.setItem("currentMap", this.world.currentMap);
   }
 
   this.Load = function(){
@@ -38,6 +39,7 @@ let Game = function(){
     if(localStorage.getItem("character_x") != null)this.character.x = Number(localStorage.getItem("character_x"));
     if(localStorage.getItem("character_y") != null)this.character.y = Number(localStorage.getItem("character_y"));
     if(localStorage.getItem("character_gold") != null)this.character.gold = Number(localStorage.getItem("character_gold"));
+    if(localStorage.getItem("currentMap") != null)this.world.currentMap = localStorage.getItem("currentMap");
   }
 }
 
@@ -52,19 +54,29 @@ let GameData = function(){
   this.tileTypes["Wall"].enterable = false;
 
   this.entities = new Array();
-  this.entities["Gold"] = new Entity("Gold");
+  this.entities["Gold"] = new EntityType("Gold");
   this.entities["Gold"].interaction = function(entity){
     game.character.gold++;
     entity.Destroy();
   }
   this.entities["Gold"].image = "img/goldcoin.png";
+
+  this.entities["Portal"] = new EntityType("Portal");
+  this.entities["Portal"].interaction = function(entity){
+    game.character.x = entity.newX;
+    game.character.y = entity.newY;
+    game.world.currentMap = entity.newMap;
+  }
+  this.entities["Portal"].enterable = false;
+  this.entities["Portal"].image = "img/portal.png";
   
   console.log("Finished init gameData");
 }
 
 let World = function(){
   this.worldMaps = Array();
-  this.worldMaps["enter"] = new WorldMap(10, 10);
+
+  this.worldMaps["enter"] = new WorldMap();
   this.worldMaps["enter"].GenerateFromArray([
     ['w', 'w', 'd', 'w', 'w', 'w', 'w', 'w', 'w', 'w'],
     ['w', 'g', 'd', 'd', 'd', 'g', 'g', 'g', 'g', 'w'],
@@ -88,6 +100,33 @@ let World = function(){
     [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
     [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ']
   ]);
+  this.worldMaps["enter"].AddPortal(2, 0, "north", 2, 9);
+
+  this.worldMaps["north"] = new WorldMap();
+  this.worldMaps["north"].GenerateFromArray([
+    ['w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w'],
+    ['w', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'w'],
+    ['w', 'g', 'w', 'w', 'w', 'g', 'g', 'g', 'g', 'w'],
+    ['w', 'g', 'd', 'd', 'd', 'g', 'g', 'g', 'g', 'w'],
+    ['w', 'g', 'd', 'd', 'd', 'g', 'g', 'g', 'g', 'w'],
+    ['w', 'g', 'd', 'd', 'd', 'g', 'g', 'g', 'g', 'w'],
+    ['w', 'g', 'g', 'd', 'g', 'g', 'g', 'g', 'g', 'w'],
+    ['w', 'g', 'd', 'd', 'g', 'g', 'g', 'g', 'g', 'w'],
+    ['w', 'g', 'd', 'g', 'g', 'g', 'g', 'g', 'g', 'w'],
+    ['w', 'w', 'd', 'w', 'w', 'w', 'w', 'w', 'w', 'w']
+  ],[
+    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', 'g', ' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ']
+  ]);
+
   this.currentMap = "enter";
 }
 
@@ -146,6 +185,13 @@ let WorldMap = function(){
       this.tiles.push(col);
     }
   }
+
+  this.AddPortal = function(x, y, newMap, newX, newY){
+    this.tiles[y][x].entity = new Entity(gameData.entities["Portal"], this.tiles[y][x]);
+    this.tiles[y][x].entity.newMap = newMap;
+    this.tiles[y][x].entity.newX = newX;
+    this.tiles[y][x].entity.newY = newY;
+  }
   
   this.Draw = function(){
     let map = "<div class='row'><div class='col-md-4'><table id='map'>";
@@ -185,9 +231,16 @@ let WorldMap = function(){
     if(x < 0 || y < 0 || x >= this.width || y >= this.height){
       return false;
     }
+
     if(this.tiles[y][x].entity != null){
+      let ent = true;
+      if(!this.tiles[y][x].entity.type.enterable){
+        ent = false;
+      }
       this.tiles[y][x].entity.type.interaction(this.tiles[y][x].entity);
+      return ent;
     }
+
     return this.tiles[y][x].type.enterable;
   }
 }
@@ -210,6 +263,7 @@ let EntityType = function(name){
   this.name = "";
   this.interaction = null;
   this.image = "";
+  this.enterable = true;
 }
 
 let Entity = function(type, tile){
