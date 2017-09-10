@@ -57,6 +57,7 @@ let GameData = function(){
   this.entities["Gold"] = new EntityType("Gold");
   this.entities["Gold"].interaction = function(entity){
     game.character.gold++;
+    game.character.inventory.AddItem(new Item(gameData.items["Gold Coin"], 1));
     entity.Destroy();
   }
   this.entities["Gold"].image = "img/goldcoin.png";
@@ -69,6 +70,10 @@ let GameData = function(){
   }
   this.entities["Portal"].enterable = false;
   this.entities["Portal"].image = "img/portal.png";
+
+  this.items = new Array();
+  this.items["Gold Coin"] = new ItemType("Gold Coin");
+  this.items["Gold Coin"].stackSize = 5;
   
   console.log("Finished init gameData");
 }
@@ -118,9 +123,9 @@ let World = function(){
     [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
     [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
     [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
-    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
-    [' ', ' ', ' ', 'g', ' ', ' ', ' ', ' ', ' ', ' '],
-    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', 'g', 'g', 'g', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', 'g', 'g', 'g', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', 'g', 'g', 'g', ' ', ' ', ' ', ' ', ' '],
     [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
     [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
     [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
@@ -225,8 +230,22 @@ let WorldMap = function(){
     map += "<li>Gold amount: " + game.character.gold + "</li>";
     map += "<li>Map: " + game.world.currentMap + "</li>";
     map += "<li>Position: " + game.character.x + ", " + game.character.y + "</li>";
+    map += "</ul></div>";
 
-    map += "</ul></div></div>";
+    map += "<div class='col-md-2'>";
+    map += "<h2>Inventory</h2>";
+    map += "<ul>";
+    for(i = 0; i < game.character.inventory.items.length; i++){
+      map += "<li>";
+      map += game.character.inventory.items[i].amount;
+      map += " ";
+      map += game.character.inventory.items[i].itemType.name;
+      map += "</li>";
+    }
+    map += "</ul>";
+    map += "</div>";
+
+    map += "</div>";
     document.getElementById("appendable").innerHTML = map;
   }
 
@@ -282,6 +301,7 @@ let Character = function(x, y){
   this.x = x;
   this.y = y;
   this.gold = 0;
+  this.inventory = new Inventory(10);
 
   this.Move = function(dir){
     let xd = 0;
@@ -325,5 +345,46 @@ let Character = function(x, y){
       this.y += dy;
     }
     game.DoTurn();
+  }
+}
+
+let Item = function(itemType, amount){
+  this.itemType = itemType;
+  this.amount = amount;
+}
+
+let ItemType = function(name){
+  this.stackSize = 99;
+  this.name = name;
+}
+
+let Inventory = function(numCells){
+  this.items = new Array();
+  this.numCells = numCells;
+
+  this.AddItem = function(item){
+    for(i = 0; i < this.items.length; i++){
+      if(this.items[i] != null){
+        if(this.items[i].itemType == item.itemType){
+          if(this.items[i].amount < this.items[i].itemType.stackSize){
+            this.items[i].amount += item.amount;
+            if(this.items[i].amount > this.items[i].itemType.stackSize){
+              item.amount = this.items[i].amount - this.items[i].stackSize;
+            }else{
+              return;
+            }
+          }
+        }
+      }
+    }
+    
+    if(this.items.length < this.numCells){
+      let tempItem = new Item(item.itemType, item.amount);
+      this.items.push(tempItem);
+      if(tempItem.amount > tempItem.itemType.stackSize){
+        item.amount = tempItem.amount - tempItem.itemType.stackSize;
+        this.AddItem(item);
+      }
+    }
   }
 }
