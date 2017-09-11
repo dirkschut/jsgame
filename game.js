@@ -114,6 +114,9 @@ let World = function(){
   ]);
   this.worldMaps["north"].AddPortal(2, 9, "enter", 2, 0);
 
+<<<<<<< HEAD
+>>>>>>> parent of 9c82a1b... Scrolling maps
+=======
 >>>>>>> parent of 9c82a1b... Scrolling maps
   this.currentMap = "enter";
 }
