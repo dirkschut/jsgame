@@ -120,6 +120,7 @@ let World = function(){
     [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ']
   ]);
   this.worldMaps["enter"].AddPortal(2, 0, "north", 2, 9);
+  this.worldMaps["enter"].AddPortal(7, 9, "south", 5, 0);
 
   this.worldMaps["north"] = new WorldMap();
   this.worldMaps["north"].GenerateFromArray([
@@ -146,6 +147,52 @@ let World = function(){
     [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ']
   ]);
   this.worldMaps["north"].AddPortal(2, 9, "enter", 2, 0);
+
+  this.worldMaps["south"] = new WorldMap();
+  this.worldMaps["south"].GenerateFromArray([
+    ['w', 'w', 'w', 'w', 'w', 'd', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w'],
+    ['w', 'g', 'g', 'g', 'g', 'd', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'w'],
+    ['w', 'g', 'g', 'g', 'g', 'd', 'g', 'g', 'g', 'g', 'd', 'd', 'd', 'g', 'g', 'g', 'g', 'g', 'g', 'w'],
+    ['w', 'g', 'g', 'g', 'g', 'd', 'd', 'd', 'g', 'g', 'd', 'd', 'd', 'g', 'g', 'g', 'g', 'g', 'g', 'w'],
+    ['w', 'g', 'g', 'g', 'g', 'g', 'g', 'd', 'd', 'd', 'd', 'd', 'd', 'g', 'g', 'g', 'g', 'g', 'g', 'w'],
+    ['w', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'd', 'd', 'd', 'g', 'g', 'g', 'g', 'g', 'g', 'w'],
+    ['w', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'd', 'd', 'd', 'g', 'g', 'g', 'g', 'g', 'g', 'w'],
+    ['w', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'w'],
+    ['w', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'w'],
+    ['w', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'w'],
+    ['w', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'w'],
+    ['w', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'w'],
+    ['w', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'w'],
+    ['w', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'w'],
+    ['w', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'w'],
+    ['w', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'w'],
+    ['w', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'w'],
+    ['w', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'w'],
+    ['w', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'w'],
+    ['w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w']
+  ],[
+    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'g', ' ', 'g', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'g', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'g', ' ', 'g', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ']
+  ]);
+  this.worldMaps["south"].AddPortal(5, 0, "enter", 7, 9);
 
   this.currentMap = "enter";
 }
@@ -214,21 +261,39 @@ let WorldMap = function(){
   }
   
   this.Draw = function(){
+    let tableWidth = Math.min(10, this.width);
+    let tableHeight = Math.min(10, this.height);
     let map = "<div class='row'><div class='col-md-4'><table id='map'>";
-    for(y = 0; y < this.width; y++){
+    for(y = game.character.y - tableHeight / 2; y < game.character.y + tableHeight / 2; y++){
       map += "<tr>";
-      for(x = 0; x < this.height; x++){
+      for(x = game.character.x - tableWidth / 2; x < game.character.x + tableWidth / 2; x++){
         let extra = "";
         
-        if(this.tiles[y][x].entity != null){
-          extra += "<img class='entity' src='" + this.tiles[y][x].entity.type.image + "' />";
+        let empty = false;
+        if(y < 0 || x < 0 || y >= this.height || x >= this.height){
+          empty = true;
         }
 
-        if(x == game.character.x && y == game.character.y){
-          extra += "<div class='character'>C</div>";
+        if(!empty){
+          if(this.tiles[y][x].entity != null){
+            extra += "<img class='entity' src='" + this.tiles[y][x].entity.type.image + "' />";
+          }
+  
+          if(x == game.character.x && y == game.character.y){
+            extra += "<div class='character'>C</div>";
+          }
         }
 
-        map += "<td class='MapTile MapTile_" + this.tiles[y][x].type.name + "' style='background-color:" + this.tiles[y][x].type.color + "; background-image: url(\"" + this.tiles[y][x].type.image + "\")'>" + extra + "</td>";
+        let name = "";
+        let color = "#000000";
+        let image = "";
+        if(!empty){
+          name = this.tiles[y][x].type.name;
+          color = this.tiles[y][x].type.color;
+          image = this.tiles[y][x].type.image;
+        }
+
+        map += "<td class='MapTile MapTile_" + name + "' style='background-color:" + color + "; background-image: url(\"" + image + "\")'>" + extra + "</td>";
       }
       map += "</tr>";
     }
