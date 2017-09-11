@@ -1,15 +1,15 @@
 console.log("JS Game");
 
 let game;
-let gameData;
+let gameDate;
 
 $( document ).ready(function() {
   InitGame();
-  window.gameData.worldMaps[game.world.currentMap].Draw();
+  game.world.worldMaps[game.world.currentMap].Draw();
 });
 
 let InitGame = function(){
-  window.gameData = new gameData();
+  gameData = new GameData();
   game = new Game();
   game.Load();
   console.log("ready");
@@ -23,7 +23,7 @@ let Game = function(){
   this.DoTurn = function(){
     this.turnCounter++;
     this.Save();
-    window.gameData.worldMaps[game.world.currentMap].Draw();
+    this.world.worldMaps[game.world.currentMap].Draw();
   }
 
   this.Save = function(){
@@ -49,17 +49,50 @@ let Game = function(){
       if(localStorage.getItem("character_inv_" + i + "_name") != null){
         let itemName = localStorage.getItem("character_inv_" + i + "_name");
         let amount = Number(localStorage.getItem("character_inv_" + i + "_amount"));
-        if(window.gameData.items[itemName] != null){
-          this.character.inventory.AddItem(new Item(window.gameData.items[itemName], amount));
+        if(gameData.items[itemName] != null){
+          this.character.inventory.AddItem(new Item(gameData.items[itemName], amount));
         }
       }
     }
   }
 }
 
+let GameData = function(){
+  this.tileTypes = new Array();
+  this.tileTypes["Grass"] = new TileType("Grass", "#008000");
+  this.tileTypes["Grass"].image = "img/tiles/grass.png";
+  this.tileTypes["Dirt"] = new TileType("Dirt", "#8b4513");
+  this.tileTypes["Dirt"].image = "img/tiles/dirt.png";
+  this.tileTypes["Wall"] = new TileType("Wall", "#808080");
+  this.tileTypes["Wall"].image = "img/tiles/wall.png";
+  this.tileTypes["Wall"].enterable = false;
+
+  this.entities = new Array();
+  this.entities["Gold"] = new EntityType("Gold");
+  this.entities["Gold"].interaction = function(entity){
+    game.character.inventory.AddItem(new Item(gameData.items["Gold Coin"], 1));
+    entity.Destroy();
+  }
+  this.entities["Gold"].image = "img/items/goldcoin.png";
+
+  this.entities["Portal"] = new EntityType("Portal");
+  this.entities["Portal"].interaction = function(entity){
+    game.character.x = entity.newX;
+    game.character.y = entity.newY;
+    game.world.currentMap = entity.newMap;
+  }
+  this.entities["Portal"].enterable = false;
+  this.entities["Portal"].image = "img/portal.png";
+
+  this.items = new Array();
+  this.items["Gold Coin"] = new ItemType("Gold Coin");
+  this.items["Gold Coin"].stackSize = 5;
+  this.items["Gold Coin"].image = "img/items/goldcoin.png";
+  
+  console.log("Finished init gameData");
+}
+
 let World = function(){
-<<<<<<< HEAD
-=======
   this.worldMaps = Array();
 
   this.worldMaps["enter"] = new WorldMap();
@@ -87,6 +120,7 @@ let World = function(){
     [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ']
   ]);
   this.worldMaps["enter"].AddPortal(2, 0, "north", 2, 9);
+  this.worldMaps["enter"].AddPortal(7, 9, "south", 5, 0);
 
   this.worldMaps["north"] = new WorldMap();
   this.worldMaps["north"].GenerateFromArray([
@@ -114,7 +148,52 @@ let World = function(){
   ]);
   this.worldMaps["north"].AddPortal(2, 9, "enter", 2, 0);
 
->>>>>>> parent of 9c82a1b... Scrolling maps
+  this.worldMaps["south"] = new WorldMap();
+  this.worldMaps["south"].GenerateFromArray([
+    ['w', 'w', 'w', 'w', 'w', 'd', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w'],
+    ['w', 'g', 'g', 'g', 'g', 'd', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'w'],
+    ['w', 'g', 'g', 'g', 'g', 'd', 'g', 'g', 'g', 'g', 'd', 'd', 'd', 'g', 'g', 'g', 'g', 'g', 'g', 'w'],
+    ['w', 'g', 'g', 'g', 'g', 'd', 'd', 'd', 'g', 'g', 'd', 'd', 'd', 'g', 'g', 'g', 'g', 'g', 'g', 'w'],
+    ['w', 'g', 'g', 'g', 'g', 'g', 'g', 'd', 'd', 'd', 'd', 'd', 'd', 'g', 'g', 'g', 'g', 'g', 'g', 'w'],
+    ['w', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'd', 'd', 'd', 'g', 'g', 'g', 'g', 'g', 'g', 'w'],
+    ['w', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'd', 'd', 'd', 'g', 'g', 'g', 'g', 'g', 'g', 'w'],
+    ['w', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'w'],
+    ['w', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'w'],
+    ['w', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'w'],
+    ['w', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'w'],
+    ['w', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'w'],
+    ['w', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'w'],
+    ['w', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'w'],
+    ['w', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'w'],
+    ['w', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'w'],
+    ['w', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'w'],
+    ['w', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'w'],
+    ['w', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'g', 'w'],
+    ['w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w']
+  ],[
+    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'g', ' ', 'g', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'g', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'g', ' ', 'g', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ']
+  ]);
+  this.worldMaps["south"].AddPortal(5, 0, "enter", 7, 9);
+
   this.currentMap = "enter";
 }
 
@@ -126,15 +205,15 @@ let WorldMap = function(){
     for(y = 0; y < height; y++){
       let col = new Array();
       for(x = 0; x < width; x++){
-        let type = window.gameData.tileTypes["Grass"];
+        let type = gameData.tileTypes["Grass"];
         if((x + y) % 2 == 1){
-          type = window.gameData.tileTypes["Dirt"];
+          type = gameData.tileTypes["Dirt"];
         }
         if(x == 0 || y == 0 || x == width - 1 || y == height -1){
-          type = window.gameData.tileTypes["Wall"];
+          type = gameData.tileTypes["Wall"];
         }
         let tile = new WorldTile(type, x, y);
-        tile.entity = new Entity(window.gameData.entities["Gold"], tile);
+        tile.entity = new Entity(gameData.entities["Gold"], tile);
         col.push(tile);
       }
       this.tiles.push(col);
@@ -151,20 +230,20 @@ let WorldMap = function(){
         let type;
         switch(tileArray[y][x]){
           case 'g':
-            type = window.gameData.tileTypes["Grass"];
+            type = gameData.tileTypes["Grass"];
             break;
           case 'd':
-            type = window.gameData.tileTypes["Dirt"];
+            type = gameData.tileTypes["Dirt"];
             break;
           case 'w':
-            type = window.gameData.tileTypes["Wall"];
+            type = gameData.tileTypes["Wall"];
             break;
         }
         let tile = new WorldTile(type, x, y);
         
         switch(entityArray[y][x]){
           case 'g':
-            tile.entity = new Entity(window.gameData.entities["Gold"], tile);
+            tile.entity = new Entity(gameData.entities["Gold"], tile);
             break;
         }
 
@@ -175,28 +254,46 @@ let WorldMap = function(){
   }
 
   this.AddPortal = function(x, y, newMap, newX, newY){
-    this.tiles[y][x].entity = new Entity(window.gameData.entities["Portal"], this.tiles[y][x]);
+    this.tiles[y][x].entity = new Entity(gameData.entities["Portal"], this.tiles[y][x]);
     this.tiles[y][x].entity.newMap = newMap;
     this.tiles[y][x].entity.newX = newX;
     this.tiles[y][x].entity.newY = newY;
   }
   
   this.Draw = function(){
+    let tableWidth = Math.min(10, this.width);
+    let tableHeight = Math.min(10, this.height);
     let map = "<div class='row'><div class='col-md-4'><table id='map'>";
-    for(y = 0; y < this.width; y++){
+    for(y = game.character.y - tableHeight / 2; y < game.character.y + tableHeight / 2; y++){
       map += "<tr>";
-      for(x = 0; x < this.height; x++){
+      for(x = game.character.x - tableWidth / 2; x < game.character.x + tableWidth / 2; x++){
         let extra = "";
         
-        if(this.tiles[y][x].entity != null){
-          extra += "<img class='entity' src='" + this.tiles[y][x].entity.type.image + "' />";
+        let empty = false;
+        if(y < 0 || x < 0 || y >= this.height || x >= this.height){
+          empty = true;
         }
 
-        if(x == game.character.x && y == game.character.y){
-          extra += "<div class='character'>C</div>";
+        if(!empty){
+          if(this.tiles[y][x].entity != null){
+            extra += "<img class='entity' src='" + this.tiles[y][x].entity.type.image + "' />";
+          }
+  
+          if(x == game.character.x && y == game.character.y){
+            extra += "<div class='character'>C</div>";
+          }
         }
 
-        map += "<td class='MapTile MapTile_" + this.tiles[y][x].type.name + "' style='background-color:" + this.tiles[y][x].type.color + "; background-image: url(\"" + this.tiles[y][x].type.image + "\")'>" + extra + "</td>";
+        let name = "";
+        let color = "#000000";
+        let image = "";
+        if(!empty){
+          name = this.tiles[y][x].type.name;
+          color = this.tiles[y][x].type.color;
+          image = this.tiles[y][x].type.image;
+        }
+
+        map += "<td class='MapTile MapTile_" + name + "' style='background-color:" + color + "; background-image: url(\"" + image + "\")'>" + extra + "</td>";
       }
       map += "</tr>";
     }
@@ -321,7 +418,7 @@ let Character = function(x, y){
         dx = 1;
         break;
     }
-    if(window.gameData.worldMaps[game.world.currentMap].TileIsEnterable(this.x + dx, this.y + dy)){
+    if(game.world.worldMaps[game.world.currentMap].TileIsEnterable(this.x + dx, this.y + dy)){
       this.x += dx;
       this.y += dy;
     }
