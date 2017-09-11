@@ -58,37 +58,46 @@ let Game = function(){
 }
 
 let GameData = function(){
-  this.tileTypes = new Array();
-  this.tileTypes["Grass"] = new TileType("Grass", "#008000");
-  this.tileTypes["Grass"].image = "img/tiles/grass.png";
-  this.tileTypes["Dirt"] = new TileType("Dirt", "#8b4513");
-  this.tileTypes["Dirt"].image = "img/tiles/dirt.png";
-  this.tileTypes["Wall"] = new TileType("Wall", "#808080");
-  this.tileTypes["Wall"].image = "img/tiles/wall.png";
-  this.tileTypes["Wall"].enterable = false;
-
-  this.entities = new Array();
-  this.entities["Gold"] = new EntityType("Gold");
-  this.entities["Gold"].interaction = function(entity){
-    game.character.inventory.AddItem(new Item(gameData.items["Gold Coin"], 1));
-    entity.Destroy();
+  this.LoadTileTypes = function(){
+    this.tileTypes = new Array();
+    this.tileTypes["Grass"] = new TileType("Grass", "#008000");
+    this.tileTypes["Grass"].image = "img/tiles/grass.png";
+    this.tileTypes["Dirt"] = new TileType("Dirt", "#8b4513");
+    this.tileTypes["Dirt"].image = "img/tiles/dirt.png";
+    this.tileTypes["Wall"] = new TileType("Wall", "#808080");
+    this.tileTypes["Wall"].image = "img/tiles/wall.png";
+    this.tileTypes["Wall"].enterable = false;
   }
-  this.entities["Gold"].image = "img/items/goldcoin.png";
-
-  this.entities["Portal"] = new EntityType("Portal");
-  this.entities["Portal"].interaction = function(entity){
-    game.character.x = entity.newX;
-    game.character.y = entity.newY;
-    game.world.currentMap = entity.newMap;
-  }
-  this.entities["Portal"].enterable = false;
-  this.entities["Portal"].image = "img/portal.png";
-
-  this.items = new Array();
-  this.items["Gold Coin"] = new ItemType("Gold Coin");
-  this.items["Gold Coin"].stackSize = 5;
-  this.items["Gold Coin"].image = "img/items/goldcoin.png";
   
+  this.LoadEntities = function(){
+    this.entities = new Array();
+    this.entities["Gold"] = new EntityType("Gold");
+    this.entities["Gold"].interaction = function(entity){
+      game.character.inventory.AddItem(new Item(gameData.items["Gold Coin"], 1));
+      entity.Destroy();
+    }
+    this.entities["Gold"].image = "img/items/goldcoin.png";
+  
+    this.entities["Portal"] = new EntityType("Portal");
+    this.entities["Portal"].interaction = function(entity){
+      game.character.x = entity.newX;
+      game.character.y = entity.newY;
+      game.world.currentMap = entity.newMap;
+    }
+    this.entities["Portal"].enterable = false;
+    this.entities["Portal"].image = "img/portal.png";
+  }
+  
+  this.LoadItems = function(){
+    this.items = new Array();
+    this.items["Gold Coin"] = new ItemType("Gold Coin");
+    this.items["Gold Coin"].stackSize = 5;
+    this.items["Gold Coin"].image = "img/items/goldcoin.png";
+  }
+  
+  this.LoadTileTypes();
+  this.LoadEntities();
+  this.LoadItems();
   console.log("Finished init gameData");
 }
 
