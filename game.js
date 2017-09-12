@@ -1,7 +1,7 @@
 console.log("JS Game");
 
 let game;
-let gameDate;
+let gameData;
 
 $( document ).ready(function() {
   InitGame();
@@ -77,6 +77,13 @@ let GameData = function(){
       entity.Destroy();
     }
     this.entities["Gold"].image = "img/items/goldcoin.png";
+
+    this.entities["Iron Ore"] = new EntityType("Iron Ore");
+    this.entities["Iron Ore"].interaction = function(entity){
+      game.character.inventory.AddItem(new Item(gameData.items["Iron Ore"], 1));
+    }
+    this.entities["Iron Ore"].enterable = false;
+    this.entities["Iron Ore"].image = "img/items/ironore.png";
   
     this.entities["Portal"] = new EntityType("Portal");
     this.entities["Portal"].interaction = function(entity){
@@ -93,6 +100,10 @@ let GameData = function(){
     this.items["Gold Coin"] = new ItemType("Gold Coin");
     this.items["Gold Coin"].stackSize = 5;
     this.items["Gold Coin"].image = "img/items/goldcoin.png";
+
+    this.items["Iron Ore"] = new ItemType("Iron Ore");
+    this.items["Iron Ore"].stackSize = 32;
+    this.items["Iron Ore"].image = "img/items/ironore.png";
   }
   
   this.LoadTileTypes();
@@ -183,9 +194,9 @@ let World = function(){
     [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
     [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
     [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
-    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'g', ' ', 'g', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
-    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'g', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
-    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'g', ' ', 'g', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'i', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
     [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
     [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
     [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
@@ -253,6 +264,9 @@ let WorldMap = function(){
         switch(entityArray[y][x]){
           case 'g':
             tile.entity = new Entity(gameData.entities["Gold"], tile);
+            break;
+          case 'i':
+            tile.entity = new Entity(gameData.entities["Iron Ore"], tile);
             break;
         }
 
