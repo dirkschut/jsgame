@@ -84,6 +84,15 @@ let GameData = function(){
     }
     this.entities["Iron Ore"].enterable = false;
     this.entities["Iron Ore"].image = "img/items/ironore.png";
+
+    this.entities["Furnace"] = new EntityType("Furnace");
+    this.entities["Furnace"].interaction = function(entity){
+      if(game.character.inventory.RemoveItem(new Item(gameData.items["Iron Ore"], 1))){
+        game.character.inventory.AddItem(new Item(gameData.items["Iron Ingot"], 1));
+      }
+    }
+    this.entities["Furnace"].enterable = false;
+    this.entities["Furnace"].image = "img/furnace.png";
   
     this.entities["Portal"] = new EntityType("Portal");
     this.entities["Portal"].interaction = function(entity){
@@ -104,6 +113,10 @@ let GameData = function(){
     this.items["Iron Ore"] = new ItemType("Iron Ore");
     this.items["Iron Ore"].stackSize = 32;
     this.items["Iron Ore"].image = "img/items/ironore.png";
+
+    this.items["Iron Ingot"] = new ItemType("Iron Ingot");
+    this.items["Iron Ingot"].stackSize = 32;
+    this.items["Iron Ingot"].image = "img/items/ironingot.png";
   }
   
   this.LoadTileTypes();
@@ -196,7 +209,7 @@ let World = function(){
     [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
     [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'i', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
     [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
-    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'f', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
     [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
     [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
     [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
@@ -268,6 +281,8 @@ let WorldMap = function(){
           case 'i':
             tile.entity = new Entity(gameData.entities["Iron Ore"], tile);
             break;
+          case 'f':
+            tile.entity = new Entity(gameData.entities["Furnace"], tile);
         }
 
         col.push(tile);
@@ -470,7 +485,8 @@ let Inventory = function(numCells){
           if(this.items[i].amount < this.items[i].itemType.stackSize){
             this.items[i].amount += item.amount;
             if(this.items[i].amount > this.items[i].itemType.stackSize){
-              item.amount = this.items[i].amount - this.items[i].stackSize;
+              item.amount = this.items[i].amount - this.items[i].itemType.stackSize;
+              this.items[i].amount = this.items[i].itemType.stackSize;
             }else{
               return;
             }
@@ -485,6 +501,24 @@ let Inventory = function(numCells){
       if(tempItem.amount > tempItem.itemType.stackSize){
         item.amount = tempItem.amount - tempItem.itemType.stackSize;
         this.AddItem(item);
+      }
+    }
+  }
+
+  this.RemoveItem = function(item){
+    for(i = 0; i < this.items.length; i++){
+      if(this.items[i].itemType == item.itemType  ){
+        this.items[i].amount -= item.amount;
+        if(this.items[i].amount == 0){
+          this.items.splice(i);
+          return true;
+        }else if(this.items[i].amount < 0){
+          item.amount = Math.abs();
+          this.items.splice(i);
+          return this.RemoveItem(item);
+        }else{
+          return true;
+        }
       }
     }
   }
