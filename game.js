@@ -37,6 +37,10 @@ let Game = function(){
       localStorage.setItem("character_inv_" + i + "_name", this.character.inventory.items[i].itemType.name);
       localStorage.setItem("character_inv_" + i + "_amount", this.character.inventory.items[i].amount);
     }
+
+    for(skill in this.character.skills){
+      localStorage.setItem("character_skill_" + skill, this.character.skills[skill].xp);
+    }
   }
 
   this.Load = function(){
@@ -53,6 +57,10 @@ let Game = function(){
           this.character.inventory.AddItem(new Item(gameData.items[itemName], amount));
         }
       }
+    }
+
+    for(skill in this.character.skills){
+      if(localStorage.getItem("character_skill_" + skill) != null)this.character.skills[skill].xp = Number(localStorage.getItem("character_skill_" + skill));
     }
   }
 }
@@ -81,6 +89,7 @@ let GameData = function(){
     this.entities["Iron Ore"] = new EntityType("Iron Ore");
     this.entities["Iron Ore"].interaction = function(entity){
       game.character.inventory.AddItem(new Item(gameData.items["Iron Ore"], 1));
+      game.character.skills["Mining"].AddXP(5);
     }
     this.entities["Iron Ore"].enterable = false;
     this.entities["Iron Ore"].image = "img/items/ironore.png";
@@ -89,6 +98,7 @@ let GameData = function(){
     this.entities["Furnace"].interaction = function(entity){
       if(game.character.inventory.RemoveItem(new Item(gameData.items["Iron Ore"], 1))){
         game.character.inventory.AddItem(new Item(gameData.items["Iron Ingot"], 1));
+        game.character.skills["Smithing"].AddXP(5);
       }
     }
     this.entities["Furnace"].enterable = false;
@@ -107,21 +117,29 @@ let GameData = function(){
   this.LoadItems = function(){
     this.items = new Array();
     this.items["Gold Coin"] = new ItemType("Gold Coin");
-    this.items["Gold Coin"].stackSize = 100;
+    this.items["Gold Coin"].stackSize = 1000;
     this.items["Gold Coin"].image = "img/items/goldcoin.png";
 
     this.items["Iron Ore"] = new ItemType("Iron Ore");
-    this.items["Iron Ore"].stackSize = 32;
+    this.items["Iron Ore"].stackSize = 100;
     this.items["Iron Ore"].image = "img/items/ironore.png";
 
     this.items["Iron Ingot"] = new ItemType("Iron Ingot");
-    this.items["Iron Ingot"].stackSize = 32;
+    this.items["Iron Ingot"].stackSize = 100;
     this.items["Iron Ingot"].image = "img/items/ironingot.png";
+  }
+
+  this.LoadSkills = function(){
+    this.skills = new Array();
+    this.skills["Mining"] = new SkillType("Mining");
+    
+    this.skills["Smithing"] = new SkillType("Smithing");
   }
   
   this.LoadTileTypes();
   this.LoadEntities();
   this.LoadItems();
+  this.LoadSkills();
   console.log("Finished init gameData");
 }
 
@@ -152,6 +170,10 @@ let Character = function(x, y){
   this.x = x;
   this.y = y;
   this.inventory = new Inventory(10);
+  this.skills = new Array();
+  for(skillType in gameData.skills){
+    this.skills[skillType] = new Skill(gameData.skills[skillType]);
+  }
 
   this.Move = function(dir){
     let xd = 0;
@@ -255,5 +277,30 @@ let Inventory = function(numCells){
         }
       }
     }
+  }
+}
+
+let SkillType = function(name){
+  this.name = name;
+  this.difficulty = 1;
+
+  this.levelReqs = [0, 100, 240, 400, 750, 1370, 2500, 4500, 8000, 15000];
+}
+
+let Skill = function(type){
+  this.type = type;
+  this.xp = 0;
+
+  this.GetLevel = function(){
+    for(i = 0; i < type.levelReqs.length; i++){
+      if(this.type.levelReqs[i] > this.xp * this.type.difficulty){
+        return i;
+      }
+    }
+    return this.type.levelReqs.length;
+  }
+
+  this.AddXP = function(amount){
+    this.xp += amount;
   }
 }
