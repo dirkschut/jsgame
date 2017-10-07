@@ -33,7 +33,7 @@ let Game = function(){
     localStorage.setItem("character_y", this.character.y);
     localStorage.setItem("currentMap", this.world.currentMap);
 
-    for(i = 0; i < this.character.inventory.items.length; i++){
+    for(let i = 0; i < this.character.inventory.items.length; i++){
       localStorage.setItem("character_inv_" + i + "_name", this.character.inventory.items[i].itemType.name);
       localStorage.setItem("character_inv_" + i + "_amount", this.character.inventory.items[i].amount);
     }
@@ -44,12 +44,13 @@ let Game = function(){
   }
 
   this.Load = function(){
+    console.log("Loading save");
     if(localStorage.getItem("turnCounter") != null)this.turnCounter = Number(localStorage.getItem("turnCounter"));
     if(localStorage.getItem("character_x") != null)this.character.x = Number(localStorage.getItem("character_x"));
     if(localStorage.getItem("character_y") != null)this.character.y = Number(localStorage.getItem("character_y"));
     if(localStorage.getItem("currentMap") != null)this.world.currentMap = localStorage.getItem("currentMap");
 
-    for(i = 0; i < this.character.inventory.numCells; i++){
+    for(let i = 0; i < this.character.inventory.numCells; i++){
       if(localStorage.getItem("character_inv_" + i + "_name") != null){
         let itemName = localStorage.getItem("character_inv_" + i + "_name");
         let amount = Number(localStorage.getItem("character_inv_" + i + "_amount"));
@@ -117,7 +118,7 @@ let GameData = function(){
   this.LoadItems = function(){
     this.items = new Array();
     this.items["Gold Coin"] = new ItemType("Gold Coin");
-    this.items["Gold Coin"].stackSize = 1000;
+    this.items["Gold Coin"].stackSize = 10000;
     this.items["Gold Coin"].image = "img/items/goldcoin.png";
 
     this.items["Iron Ore"] = new ItemType("Iron Ore");
@@ -235,34 +236,44 @@ let Inventory = function(numCells){
   this.numCells = numCells;
 
   this.AddItem = function(item){
-    for(i = 0; i < this.items.length; i++){
-      if(this.items[i] != null){
-        if(this.items[i].itemType == item.itemType){
-          if(this.items[i].amount < this.items[i].itemType.stackSize){
-            this.items[i].amount += item.amount;
-            if(this.items[i].amount > this.items[i].itemType.stackSize){
-              item.amount = this.items[i].amount - this.items[i].itemType.stackSize;
-              this.items[i].amount = this.items[i].itemType.stackSize;
-            }else{
-              return;
-            }
+    if(item.amount == 0){
+      return;
+    }
+    
+    for(let i = 0; i < this.items.length; i++){
+      if(this.items[i].itemType == item.itemType){
+        if(this.items[i].amount < this.items[i].itemType.stackSize){
+          this.items[i].amount += item.amount;
+          item.amount = 0;
+          if(this.items[i].amount > this.items[i].itemType.stackSize){
+            item.amount = this.items[i].amount - this.items[i].itemType.stackSize;
+            this.items[i].amount = this.items[i].itemType.stackSize;
+            this.AddItem(item);
+            return;
           }
         }
       }
     }
+
+    if(item.amount == 0){
+      return;
+    }
     
     if(this.items.length < this.numCells){
       let tempItem = new Item(item.itemType, item.amount);
-      this.items.push(tempItem);
       if(tempItem.amount > tempItem.itemType.stackSize){
-        item.amount = tempItem.amount - tempItem.itemType.stackSize;
-        this.AddItem(item);
+        tempItem.amount = tempItem.itemType.stackSize;
+        item.amount -= item.itemType.stackSize;
       }
+      this.items.push(tempItem);
+      if(item.amount > 0){
+        this.AddItem(item);
+      } 
     }
   }
 
   this.RemoveItem = function(item){
-    for(i = 0; i < this.items.length; i++){
+    for(let i = 0; i < this.items.length; i++){
       if(this.items[i].itemType == item.itemType  ){
         this.items[i].amount -= item.amount;
         if(this.items[i].amount == 0){
@@ -292,7 +303,7 @@ let Skill = function(type){
   this.xp = 0;
 
   this.GetLevel = function(){
-    for(i = 0; i < type.levelReqs.length; i++){
+    for(let i = 0; i < type.levelReqs.length; i++){
       if(this.type.levelReqs[i] > this.xp * this.type.difficulty){
         return i;
       }
