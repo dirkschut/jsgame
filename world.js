@@ -17,10 +17,10 @@ let World = function(){
     [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
     [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
     [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
-    [' ', ' ', 'g', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', 'g', 's', 'c', ' ', ' ', ' ', ' ', ' '],
     [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
     [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
-    [' ', ' ', ' ', 'g', ' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
     [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
     [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
     [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ']
@@ -151,11 +151,18 @@ let WorldMap = function(){
           case 'g':
             tile.entity = new Entity(gameData.entities["Gold"], tile);
             break;
+          case 's':
+            tile.entity = new Entity(gameData.entities["Silver"], tile);
+            break;
+          case 'c':
+            tile.entity = new Entity(gameData.entities["Copper"], tile);
+            break;
           case 'i':
             tile.entity = new Entity(gameData.entities["Iron Ore"], tile);
             break;
           case 'f':
             tile.entity = new Entity(gameData.entities["Furnace"], tile);
+            break;
         }
 
         col.push(tile);

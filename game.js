@@ -86,6 +86,20 @@ let GameData = function(){
       entity.Destroy();
     }
     this.entities["Gold"].image = "img/items/goldcoin.png";
+    
+    this.entities["Silver"] = new EntityType("Silver");
+    this.entities["Silver"].interaction = function(entity){
+      game.character.inventory.AddItem(new Item(gameData.items["Silver Coin"], 1));
+      entity.Destroy();
+    }
+    this.entities["Silver"].image = "img/items/silvercoin.png";
+
+    this.entities["Copper"] = new EntityType("Copper");
+    this.entities["Copper"].interaction = function(entity){
+      game.character.inventory.AddItem(new Item(gameData.items["Copper Coin"], 1));
+      entity.Destroy();
+    }
+    this.entities["Copper"].image = "img/items/coppercoin.png";
 
     this.entities["Iron Ore"] = new EntityType("Iron Ore");
     this.entities["Iron Ore"].interaction = function(entity){
@@ -114,21 +128,6 @@ let GameData = function(){
     this.entities["Portal"].enterable = false;
     this.entities["Portal"].image = "img/portal.png";
   }
-  
-  this.LoadItems = function(){
-    this.items = new Array();
-    this.items["Gold Coin"] = new ItemType("Gold Coin");
-    this.items["Gold Coin"].stackSize = 10000;
-    this.items["Gold Coin"].image = "img/items/goldcoin.png";
-
-    this.items["Iron Ore"] = new ItemType("Iron Ore");
-    this.items["Iron Ore"].stackSize = 100;
-    this.items["Iron Ore"].image = "img/items/ironore.png";
-
-    this.items["Iron Ingot"] = new ItemType("Iron Ingot");
-    this.items["Iron Ingot"].stackSize = 100;
-    this.items["Iron Ingot"].image = "img/items/ironingot.png";
-  }
 
   this.LoadSkills = function(){
     this.skills = new Array();
@@ -139,7 +138,7 @@ let GameData = function(){
   
   this.LoadTileTypes();
   this.LoadEntities();
-  this.LoadItems();
+  LoadItems(this);
   this.LoadSkills();
   console.log("Finished init gameData");
 }
@@ -218,76 +217,6 @@ let Character = function(x, y){
       this.y += dy;
     }
     game.DoTurn();
-  }
-}
-
-let Item = function(itemType, amount){
-  this.itemType = itemType;
-  this.amount = amount;
-}
-
-let ItemType = function(name){
-  this.stackSize = 99;
-  this.name = name;
-}
-
-let Inventory = function(numCells){
-  this.items = new Array();
-  this.numCells = numCells;
-
-  this.AddItem = function(item){
-    if(item.amount == 0){
-      return;
-    }
-    
-    for(let i = 0; i < this.items.length; i++){
-      if(this.items[i].itemType == item.itemType){
-        if(this.items[i].amount < this.items[i].itemType.stackSize){
-          this.items[i].amount += item.amount;
-          item.amount = 0;
-          if(this.items[i].amount > this.items[i].itemType.stackSize){
-            item.amount = this.items[i].amount - this.items[i].itemType.stackSize;
-            this.items[i].amount = this.items[i].itemType.stackSize;
-            this.AddItem(item);
-            return;
-          }
-        }
-      }
-    }
-
-    if(item.amount == 0){
-      return;
-    }
-    
-    if(this.items.length < this.numCells){
-      let tempItem = new Item(item.itemType, item.amount);
-      if(tempItem.amount > tempItem.itemType.stackSize){
-        tempItem.amount = tempItem.itemType.stackSize;
-        item.amount -= item.itemType.stackSize;
-      }
-      this.items.push(tempItem);
-      if(item.amount > 0){
-        this.AddItem(item);
-      } 
-    }
-  }
-
-  this.RemoveItem = function(item){
-    for(let i = 0; i < this.items.length; i++){
-      if(this.items[i].itemType == item.itemType  ){
-        this.items[i].amount -= item.amount;
-        if(this.items[i].amount == 0){
-          this.items.splice(i);
-          return true;
-        }else if(this.items[i].amount < 0){
-          item.amount = Math.abs();
-          this.items.splice(i);
-          return this.RemoveItem(item);
-        }else{
-          return true;
-        }
-      }
-    }
   }
 }
 
