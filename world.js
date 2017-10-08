@@ -240,6 +240,7 @@ let WorldMap = function(){
       map += "</li>";
     }
     map += "</ul>";
+    map += "<div id='clearinv' onclick='game.character.inventory.Clear(); game.DoTurn();'>Clear</div>";
     map += "</div>";
 
     map += "<div class='col-md-2'>";

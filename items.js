@@ -91,4 +91,9 @@ let Inventory = function(numCells){
       }
     }
   }
+
+  this.Clear = function(){
+    this.items = new Array();
+    game.Save();
+  }
 }
