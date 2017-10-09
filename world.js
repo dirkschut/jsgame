@@ -229,7 +229,7 @@ let WorldMap = function(){
     map += "</ul></div>";
 
     map += "<div class='col-md-2'>";
-    map += "<h2>Inventory</h2>";
+    map += "<h2>Inv</h2>";
     map += "<ul>";
     for(i = 0; i < game.character.inventory.items.length; i++){
       map += "<li>";
