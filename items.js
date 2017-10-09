@@ -96,4 +96,25 @@ let Inventory = function(numCells){
     this.items = new Array();
     game.Save();
   }
+
+  this.Draw = function(){
+    var map = "";
+
+    map += "<div class='col-md-2'>";
+    map += "<h2>Inv</h2>";
+    map += "<ul>";
+    for(i = 0; i < game.character.inventory.items.length; i++){
+      map += "<li>";
+      map += "<img src='" + game.character.inventory.items[i].itemType.image + "' />";
+      map += game.character.inventory.items[i].amount;
+      map += " ";
+      map += game.character.inventory.items[i].itemType.name;
+      map += "</li>";
+    }
+    map += "</ul>";
+    map += "<div id='clearinv' onclick='game.character.inventory.Clear(); game.DoTurn();'>Clear</div>";
+    map += "</div>";
+
+    return map;
+  }
 }

@@ -7,9 +7,12 @@ body {
     text-align: center;
 }
 
+#map{
+    width: 100%;
+}
+
 .MapTile {
     width: 32px;
-    min-width: 32px;
     height: 32px;
     border: 1px solid black;
     position: relative;
