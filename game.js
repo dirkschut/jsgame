@@ -80,51 +80,31 @@ let GameData = function(){
   
   this.LoadEntities = function(){
     this.entities = new Array();
+
     this.entities["Gold"] = new EntityType("Gold");
-    this.entities["Gold"].interaction = function(entity){
-      game.character.inventory.AddItem(new Item(gameData.items["Gold Coin"], 1));
-      entity.Destroy();
-    }
+    this.entities["Gold"].interaction = this.actions["Gold Coin"];
     this.entities["Gold"].image = "img/items/goldcoin.png";
     
     this.entities["Silver"] = new EntityType("Silver");
-    this.entities["Silver"].interaction = function(entity){
-      game.character.inventory.AddItem(new Item(gameData.items["Silver Coin"], 1));
-      entity.Destroy();
-    }
+    this.entities["Silver"].interaction = this.actions["Silver Coin"];
     this.entities["Silver"].image = "img/items/silvercoin.png";
 
     this.entities["Copper"] = new EntityType("Copper");
-    this.entities["Copper"].interaction = function(entity){
-      game.character.inventory.AddItem(new Item(gameData.items["Copper Coin"], 1));
-      entity.Destroy();
-    }
+    this.entities["Copper"].interaction = this.actions["Copper Coin"];
     this.entities["Copper"].image = "img/items/coppercoin.png";
 
     this.entities["Iron Ore"] = new EntityType("Iron Ore");
-    this.entities["Iron Ore"].interaction = function(entity){
-      game.character.inventory.AddItem(new Item(gameData.items["Iron Ore"], 1));
-      game.character.skills["Mining"].AddXP(5);
-    }
+    this.entities["Iron Ore"].interaction = this.actions["Mine Iron"];
     this.entities["Iron Ore"].enterable = false;
     this.entities["Iron Ore"].image = "img/items/ironore.png";
 
     this.entities["Furnace"] = new EntityType("Furnace");
-    this.entities["Furnace"].interaction = function(entity){
-      if(game.character.inventory.RemoveItem(new Item(gameData.items["Iron Ore"], 1))){
-        game.character.inventory.AddItem(new Item(gameData.items["Iron Ingot"], 1));
-        game.character.skills["Smithing"].AddXP(5);
-      }
-    }
+    this.entities["Furnace"].interaction = this.actions["Smelt Iron"];
     this.entities["Furnace"].enterable = false;
     this.entities["Furnace"].image = "img/furnace.png";
   
     this.entities["Portal"] = new EntityType("Portal");
-    this.entities["Portal"].interaction = function(entity){
-      game.character.x = entity.newX;
-      game.character.y = entity.newY;
-      game.world.currentMap = entity.newMap;
-    }
+    this.entities["Portal"].interaction = this.actions["Portal"];
     this.entities["Portal"].enterable = false;
     this.entities["Portal"].image = "img/portal.png";
   }
@@ -137,6 +117,7 @@ let GameData = function(){
   }
   
   this.LoadTileTypes();
+  LoadActions(this);
   this.LoadEntities();
   LoadItems(this);
   this.LoadSkills();
