@@ -5,7 +5,14 @@ let gameData;
 
 $( document ).ready(function() {
   InitGame();
-  game.world.worldMaps[game.world.currentMap].Draw();
+  switch(GetParameterByName("p")){
+    case "news":
+      new News().Draw();
+      break;
+    default:
+      game.world.worldMaps[game.world.currentMap].Draw();
+      break;
+  }
 });
 
 let InitGame = function(){
@@ -243,4 +250,14 @@ let Skill = function(type){
   this.AddXP = function(amount){
     this.xp += amount;
   }
+}
+
+function GetParameterByName(name, url) {
+  if (!url) url = window.location.href;
+  name = name.replace(/[\[\]]/g, "\\$&");
+  var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+      results = regex.exec(url);
+  if (!results) return null;
+  if (!results[2]) return '';
+  return decodeURIComponent(results[2].replace(/\+/g, " "));
 }

@@ -181,7 +181,7 @@ let WorldMap = function(){
   this.Draw = function(){
     let tableWidth = Math.min(10, this.width);
     let tableHeight = Math.min(10, this.height);
-    let map = "<div class='row'><div class='col-md-4'><table id='map'>";
+    let map = "<div class='container'><div class='starter-template'><div class='row'><div class='col-md-4'><table id='map'>";
     for(y = game.character.y - tableHeight / 2; y < game.character.y + tableHeight / 2; y++){
       map += "<tr>";
       for(x = game.character.x - tableWidth / 2; x < game.character.x + tableWidth / 2; x++){
@@ -252,7 +252,7 @@ let WorldMap = function(){
     map += "</ul>";
     map += "</div>";
 
-    map += "</div>";
+    map += "</div></div></div>";
     document.getElementById("appendable").innerHTML = map;
   }
 
